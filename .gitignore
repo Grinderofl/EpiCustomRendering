@@ -1,7 +1,5 @@
-src/WoodMac.Site/License.config
-src/WoodMac.Manager/App_Data/ImportExport/*
-src/appdata
-boot/*.log
+blobs/
+App_Data/
 
 .sonarqube/
 
@@ -190,10 +188,6 @@ FakesAssemblies/
 .vs
 
 # Specflow and Galen test reports etc
-src/WoodMac.AutomatedTests/SpecReports/*
-src/WoodMac.AutomatedTests/zzLayout/reports
 .idea/
 *.iml
 *.swp
-
-(Consumer) Single Sign On  & Analytics.msg

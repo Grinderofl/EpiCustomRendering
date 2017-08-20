@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.Web.Mvc;
 using EPiServer.Framework;
 using EPiServer.Framework.Initialization;
@@ -7,6 +9,9 @@ using EpiCustomRendering.Helpers;
 using EPiServer.Web.Mvc;
 using EPiServer.Web.Mvc.Html;
 using StructureMap;
+using StructureMap.Configuration.DSL;
+using StructureMap.Graph;
+using StructureMap.TypeRules;
 
 namespace EpiCustomRendering.Business.Initialization
 {
@@ -25,7 +30,15 @@ namespace EpiCustomRendering.Business.Initialization
         {
             //Swap out the default ContentRenderer for our custom
             container.For<IContentRenderer>().Use<ErrorHandlingContentRenderer>();
-            container.For<ContentAreaRenderer>().Use<CustomContentAreaRenderer>();
+            container.For<ContentAreaRenderer>().Use<ConventionalContentAreaRenderer>();
+            container.ForSingletonOf<IConventionApplier>().Use<ConventionApplier>();
+            container.Scan(scan =>
+            {
+                scan.AssemblyContainingType<ITagBuilderConvention>();
+                scan.AddAllTypesOf<ITagBuilderConvention>();
+                scan.Convention<SingletonConvention<ITagBuilderConvention>>();
+            });
+
             //Implementations for custom interfaces can be registered here.
         }
 
@@ -39,6 +52,17 @@ namespace EpiCustomRendering.Business.Initialization
 
         public void Preload(string[] parameters)
         {
+        }
+    }
+
+    public class SingletonConvention<TPluginFamily> : IRegistrationConvention
+    {
+        public void Process(Type type, Registry registry)
+        {
+            if (type.IsAbstract || !type.CanBeCreated() || !type.AllInterfaces().Contains(typeof(TPluginFamily)))
+                return;
+
+            registry.ForSingletonOf(typeof(TPluginFamily)).Use(type);
         }
     }
 }
