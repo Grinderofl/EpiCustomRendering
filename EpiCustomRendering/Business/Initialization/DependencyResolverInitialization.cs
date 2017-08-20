@@ -5,6 +5,7 @@ using EPiServer.Framework;
 using EPiServer.Framework.Initialization;
 using EPiServer.ServiceLocation;
 using EpiCustomRendering.Business.Rendering;
+using EpiCustomRendering.Business.Rendering.Conventions;
 using EpiCustomRendering.Helpers;
 using EPiServer.Web.Mvc;
 using EPiServer.Web.Mvc.Html;

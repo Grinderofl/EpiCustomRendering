@@ -25,6 +25,7 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -264,12 +265,19 @@
     <Compile Include="Business\PageContextActionFilter.cs" />
     <Compile Include="Business\PageTypeExtensions.cs" />
     <Compile Include="Business\PageViewContextFactory.cs" />
+    <Compile Include="Business\Rendering\Conventions\AlloyTagBuilderConvention.cs" />
+    <Compile Include="Business\Rendering\Conventions\Base\ContentAreaItemTagBuilderConvention.cs" />
+    <Compile Include="Business\Rendering\ContentAreaRenderingContext.cs" />
+    <Compile Include="Business\Rendering\Conventions\Base\ContentAreaTagBuilderConvention.cs" />
     <Compile Include="Business\Rendering\ConventionalContentAreaRenderer.cs" />
-    <Compile Include="Business\Rendering\Conventions\ITagBuilderConvention.cs" />
+    <Compile Include="Business\Rendering\Conventions\ConventionApplier.cs" />
     <Compile Include="Business\Rendering\ErrorHandlingContentRenderer.cs" />
     <Compile Include="Business\Rendering\IContainerPage.cs" />
+    <Compile Include="Business\Rendering\Conventions\IConventionApplier.cs" />
     <Compile Include="Business\Rendering\ICustomCssInContentArea.cs" />
+    <Compile Include="Business\Rendering\Conventions\ITagBuilderConvention.cs" />
     <Compile Include="Business\Rendering\SiteViewEngine.cs" />
+    <Compile Include="Business\Rendering\Conventions\Base\TagBuilderConventionbase.cs" />
     <Compile Include="Business\Rendering\TemplateCoordinator.cs" />
     <Compile Include="Business\SearchService.cs" />
     <Compile Include="Business\StructureMapDependencyResolver.cs" />
