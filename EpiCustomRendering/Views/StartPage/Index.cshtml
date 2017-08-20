@@ -1,4 +1,4 @@
 @using EpiCustomRendering
 @model PageViewModel<EpiCustomRendering.Models.Pages.StartPage>
 
-@Html.PropertyFor(x => x.CurrentPage.MainContentArea, new { CssClass = "row equal-height", tag = Global.ContentAreaTags.FullWidth })
+@Html.PropertyFor(x => x.CurrentPage.MainContentArea, new { CssClass = "row equal-height", tag = Global.ContentAreaTags.FullWidth, ChildrenCustomAttributes = new { data_child_attribute = "this is attribute for child item" }, CustomAttributes = new { data_container_attribute = "this is attribute for container" } })

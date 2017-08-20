@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Web.Mvc;
 using EpiCustomRendering.Business.Rendering.Conventions.Base;
 using EPiServer;
@@ -6,15 +7,15 @@ using EPiServer.Web;
 
 namespace EpiCustomRendering.Business.Rendering.Conventions
 {
-    public class AlloyTagBuilderConvention : ContentAreaItemTagBuilderConvention
+    public class AlloyTagBuilderConvention : ITagBuilderConvention
     {
-        protected override void ApplyCore(ContentAreaRenderingContext context, TagBuilder tagBuilder)
+        protected virtual void ApplyCore(ContentAreaRenderingContext context, TagBuilder tagBuilder)
         {
             var tag = GetContentAreaItemTemplateTag(context.ViewData, context.CurrentItemDisplayOption);
             tagBuilder.AddCssClass(string.Format($"block {GetTypeSpecificClasses(context.CurrentItemContentData)} {GetCssClassForTag(tag)} {tag}"));
         }
 
-        private string GetCssClassForTag(string tagName)
+        protected virtual string GetCssClassForTag(string tagName)
         {
             if (string.IsNullOrEmpty(tagName))
                 return "";
@@ -32,7 +33,7 @@ namespace EpiCustomRendering.Business.Rendering.Conventions
             }
         }
 
-        private string GetTypeSpecificClasses(IContent content)
+        protected virtual string GetTypeSpecificClasses(IContent content)
         {
             var cssClass = content?.GetOriginalType().Name.ToLowerInvariant() ?? string.Empty;
 
@@ -44,13 +45,11 @@ namespace EpiCustomRendering.Business.Rendering.Conventions
             return cssClass;
         }
 
-
-
         protected virtual string GetContentAreaItemTemplateTag(ViewDataDictionary viewData, DisplayOption displayOption)
         {
             if (displayOption != null)
                 return displayOption.Tag;
-            return viewData["tag"] as string;
+            return GetContentAreaTemplateTag(viewData);
         }
         
         protected virtual string GetContentAreaTemplateTag(ViewDataDictionary viewData)
@@ -58,5 +57,10 @@ namespace EpiCustomRendering.Business.Rendering.Conventions
             return viewData["tag"] as string;
         }
 
+        public void Apply(ContentAreaRenderingContext context, TagBuilder tagBuilder)
+        {
+            if(context.IsRenderingContentAreaItem())
+                ApplyCore(context, tagBuilder);
+        }
     }
 }

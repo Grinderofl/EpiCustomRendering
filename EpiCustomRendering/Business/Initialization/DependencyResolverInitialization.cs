@@ -31,12 +31,11 @@ namespace EpiCustomRendering.Business.Initialization
         {
             //Swap out the default ContentRenderer for our custom
             container.For<IContentRenderer>().Use<ErrorHandlingContentRenderer>();
-            container.For<ContentAreaRenderer>().Use<ConventionalContentAreaRenderer>();
+            container.For<ContentAreaRenderer>().Use<AlloyContentAreaRenderer>();
             container.ForSingletonOf<IConventionApplier>().Use<ConventionApplier>();
             container.Scan(scan =>
             {
                 scan.AssemblyContainingType<ITagBuilderConvention>();
-                scan.AddAllTypesOf<ITagBuilderConvention>();
                 scan.Convention<SingletonConvention<ITagBuilderConvention>>();
             });
 
