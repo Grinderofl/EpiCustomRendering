@@ -9,10 +9,16 @@ namespace EpiCustomRendering.Business.Rendering.Conventions
 {
     public class AlloyTagBuilderConvention : ITagBuilderConvention
     {
+        public void Apply(ContentAreaRenderingContext context, TagBuilder tagBuilder)
+        {
+            if(context.IsRenderingContentAreaItem())
+                ApplyCore(context, tagBuilder);
+        }
+
         protected virtual void ApplyCore(ContentAreaRenderingContext context, TagBuilder tagBuilder)
         {
             var tag = GetContentAreaItemTemplateTag(context.ViewData, context.CurrentItemDisplayOption);
-            tagBuilder.AddCssClass(string.Format($"block {GetTypeSpecificClasses(context.CurrentItemContentData)} {GetCssClassForTag(tag)} {tag}"));
+            tagBuilder.AddCssClass(string.Format($@"block {GetTypeSpecificClasses(context.CurrentItemContent)} {GetCssClassForTag(tag)} {tag}"));
         }
 
         protected virtual string GetCssClassForTag(string tagName)
@@ -55,12 +61,6 @@ namespace EpiCustomRendering.Business.Rendering.Conventions
         protected virtual string GetContentAreaTemplateTag(ViewDataDictionary viewData)
         {
             return viewData["tag"] as string;
-        }
-
-        public void Apply(ContentAreaRenderingContext context, TagBuilder tagBuilder)
-        {
-            if(context.IsRenderingContentAreaItem())
-                ApplyCore(context, tagBuilder);
         }
     }
 }

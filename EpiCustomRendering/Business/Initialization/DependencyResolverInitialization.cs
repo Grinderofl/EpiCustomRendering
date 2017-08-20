@@ -32,7 +32,7 @@ namespace EpiCustomRendering.Business.Initialization
             //Swap out the default ContentRenderer for our custom
             container.For<IContentRenderer>().Use<ErrorHandlingContentRenderer>();
             container.For<ContentAreaRenderer>().Use<AlloyContentAreaRenderer>();
-            container.ForSingletonOf<IConventionApplier>().Use<ConventionApplier>();
+            container.ForSingletonOf<ITagBuilderConventionComposer>().Use<TagBuilderConventionComposer>();
             container.Scan(scan =>
             {
                 scan.AssemblyContainingType<ITagBuilderConvention>();

@@ -19,14 +19,16 @@ namespace EpiCustomRendering.Business.Rendering
     {
 
         private ContentAreaRenderingContext _renderingContext;
-        private readonly IContentAreaLoader _contentAreaLoader;
-        private readonly IConventionApplier _conventionApplier;
 
-        public AlloyContentAreaRenderer(IContentAreaLoader contentAreaLoader, IConventionApplier conventionApplier)
+        private readonly IContentAreaLoader _contentAreaLoader;
+        private readonly ITagBuilderConventionComposer _composer;
+
+        public AlloyContentAreaRenderer(IContentAreaLoader contentAreaLoader, ITagBuilderConventionComposer composer)
         {
             if (contentAreaLoader == null) throw new ArgumentNullException(nameof(contentAreaLoader));
+            if (composer == null) throw new ArgumentNullException(nameof(composer));
             _contentAreaLoader = contentAreaLoader;
-            _conventionApplier = conventionApplier;
+            _composer = composer;
         }
 
 
@@ -38,13 +40,13 @@ namespace EpiCustomRendering.Business.Rendering
             var viewContext = htmlHelper.ViewContext;
             TagBuilder contentAreaTagBuilder = null;
 
-            _renderingContext = new ContentAreaRenderingContext(viewContext.ViewData, contentArea, contentArea?.FilteredItems?.Count() ?? 0);
+            _renderingContext = new ContentAreaRenderingContext(viewContext.ViewData, contentArea);
 
             if (!IsInEditMode(htmlHelper) && ShouldRenderWrappingElement(htmlHelper))
             {
                 contentAreaTagBuilder = new TagBuilder(GetContentAreaHtmlTag(htmlHelper, contentArea));
                 AddNonEmptyCssClass(contentAreaTagBuilder, viewContext.ViewData["cssclass"] as string);
-                _conventionApplier.Apply(_renderingContext, contentAreaTagBuilder);
+                _composer.Compose(_renderingContext, contentAreaTagBuilder);
                 viewContext.Writer.Write(contentAreaTagBuilder.ToString(TagRenderMode.StartTag));
             }
             RenderContentAreaItems(htmlHelper, contentArea.FilteredItems);
@@ -67,9 +69,10 @@ namespace EpiCustomRendering.Business.Rendering
         protected override void BeforeRenderContentAreaItemStartTag(TagBuilder tagBuilder, 
             ContentAreaItem contentAreaItem)
         {
-            _conventionApplier.Apply(_renderingContext, tagBuilder);
+            _composer.Compose(_renderingContext, tagBuilder);
 
         }
     }
+
 
 }

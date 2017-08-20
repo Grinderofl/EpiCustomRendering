@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Web.Mvc;
 using EPiServer.Core;
 using EPiServer.Web;
@@ -8,7 +9,9 @@ namespace EpiCustomRendering.Business.Rendering
     {
         public int CurrentItemIndex { get; protected set; }
         public ContentAreaItem CurrentItem { get; protected set; }
-        public IContent CurrentItemContentData { get; protected set; }
+
+        public IContent CurrentItemContent { get; protected set; }
+        public IContent PreviousItemContent { get; protected set; }
         public DisplayOption CurrentItemDisplayOption { get; protected set; }
 
         public ViewDataDictionary ViewData { get; }
@@ -16,17 +19,17 @@ namespace EpiCustomRendering.Business.Rendering
         public int TotalItems { get; }
 
 
-        public ContentAreaRenderingContext(ViewDataDictionary viewData, ContentArea contentArea, int availableItems)
+        public ContentAreaRenderingContext(ViewDataDictionary viewData, ContentArea contentArea)
         {
             ViewData = viewData;
             ContentArea = contentArea;
-            TotalItems = availableItems;
+            TotalItems = contentArea?.FilteredItems?.Count() ?? 0;
         }
         
         public void BeginRenderingItem(ContentAreaItem contentAreaItem, IContent content, DisplayOption displayOption)
         {
             CurrentItem = contentAreaItem;
-            CurrentItemContentData = content;
+            CurrentItemContent = content;
             CurrentItemDisplayOption = displayOption;
         }
 
@@ -34,20 +37,25 @@ namespace EpiCustomRendering.Business.Rendering
 
         public void FinishRenderingItem()
         {
+            
+            PreviousItemContent = 
+                CurrentItemIndex < TotalItems - 1
+                    ? CurrentItemContent 
+                    : null;
             CurrentItemIndex++;
             CurrentItem = null;
-            CurrentItemContentData = null;
+            CurrentItemContent = null;
             CurrentItemDisplayOption = null;
         }
 
         public bool IsRenderingContentArea()
         {
-            return CurrentItem == null && CurrentItemContentData == null && ContentArea != null;
+            return CurrentItem == null && CurrentItemContent == null && ContentArea != null;
         }
 
         public bool IsRenderingContentAreaItem()
         {
-            return CurrentItem != null && CurrentItemContentData != null && ContentArea != null;
+            return CurrentItem != null && CurrentItemContent != null && ContentArea != null;
         }
 
     }

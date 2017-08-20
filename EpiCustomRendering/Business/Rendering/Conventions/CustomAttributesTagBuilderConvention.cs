@@ -3,6 +3,9 @@ using System.Web.Routing;
 
 namespace EpiCustomRendering.Business.Rendering.Conventions
 {
+    /// <summary>
+    /// Provides a way to add custom attributes to both container and child items from calling view
+    /// </summary>
     public class CustomAttributesTagBuilderConvention : ITagBuilderConvention
     {
         public virtual void Apply(ContentAreaRenderingContext context, TagBuilder tagBuilder)
